@@ -1,0 +1,320 @@
+// BUN THEORY data model. PostgreSQL via Prisma 7.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── People ──────────────────────────────────────────────────────────────
+
+enum Role {
+  OWNER
+  MANAGER
+  STAFF
+}
+
+/// Restaurant staff who can sign in to the admin.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(STAFF)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  lastLoginAt  DateTime?
+}
+
+/// Someone who has ordered. Matched by phone number at checkout.
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String   @unique
+  email     String?
+  createdAt DateTime @default(now())
+  orders    Order[]
+  reviews   Review[]
+}
+
+// ── Places ──────────────────────────────────────────────────────────────
+
+model Branch {
+  id           String   @id @default(cuid())
+  name         String
+  addressLines String[]
+  phone        String?
+  /// [{ days, open, close }]
+  hours        Json
+  active       Boolean  @default(true)
+  orders       Order[]
+  zones        DeliveryZone[]
+}
+
+model DeliveryZone {
+  id            String   @id @default(cuid())
+  name          String
+  /// Postcode prefixes covered by this zone; empty means "anywhere".
+  postcodes     String[]
+  feeCents      Int
+  minOrderCents Int
+  freeOverCents Int?
+  etaMin        Int      @default(25)
+  etaMax        Int      @default(40)
+  active        Boolean  @default(true)
+  branchId      String?
+  branch        Branch?  @relation(fields: [branchId], references: [id], onDelete: SetNull)
+}
+
+// ── Catalogue ───────────────────────────────────────────────────────────
+
+model Category {
+  slug     String    @id
+  name     String
+  blurb    String    @default("")
+  sort     Int       @default(0)
+  products Product[]
+}
+
+model Product {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  name         String
+  categorySlug String
+  category     Category      @relation(fields: [categorySlug], references: [slug])
+  tagline      String
+  description  String
+  priceCents   Int
+  available    Boolean       @default(true)
+  featured     Boolean       @default(false)
+  tags         String[]
+  /// Burger layer stack (LayerSpec[]) for 3D rendering.
+  layers       Json?
+  artwork      String?
+  imageUrl     String?
+  calories     Int?
+  sort         Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  optionGroups OptionGroup[]
+  orderItems   OrderItem[]
+  reviews      Review[]
+}
+
+enum OptionGroupType {
+  single
+  multi
+}
+
+/// A product customisation group ("Extras", "Size", "Hold the…").
+model OptionGroup {
+  id        String          @id @default(cuid())
+  productId String
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  key       String
+  name      String
+  type      OptionGroupType
+  required  Boolean         @default(false)
+  max       Int?
+  sort      Int             @default(0)
+  options   OptionChoice[]
+
+  @@unique([productId, key])
+}
+
+/// A variant or add-on within a group.
+model OptionChoice {
+  id         String      @id @default(cuid())
+  groupId    String
+  group      OptionGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  key        String
+  label      String
+  priceCents Int         @default(0)
+  available  Boolean     @default(true)
+  sort       Int         @default(0)
+
+  @@unique([groupId, key])
+}
+
+/// Configurator ingredients (bun, patty, cheese, veg, sauce, extras).
+model Ingredient {
+  id         String   @id @default(cuid())
+  group      String
+  key        String
+  label      String
+  note       String?
+  priceCents Int      @default(0)
+  available  Boolean  @default(true)
+  sort       Int      @default(0)
+
+  @@unique([group, key])
+}
+
+model InventoryItem {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  unit         String
+  quantity     Float
+  lowThreshold Float
+  updatedAt    DateTime @updatedAt
+}
+
+// ── Promotions ──────────────────────────────────────────────────────────
+
+enum CouponKind {
+  percent
+  fixed
+}
+
+model Coupon {
+  code             String     @id
+  description      String     @default("")
+  kind             CouponKind
+  /// Percent (0–100) or cents, depending on kind.
+  value            Int
+  minSubtotalCents Int?
+  maxDiscountCents Int?
+  active           Boolean    @default(true)
+  expiresAt        DateTime?
+  maxUses          Int?
+  uses             Int        @default(0)
+  createdAt        DateTime   @default(now())
+}
+
+// ── Orders ──────────────────────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  OUT_FOR_DELIVERY
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  cash
+  card_on_pickup
+  online
+}
+
+model Order {
+  id               String        @id @default(cuid())
+  number           Int           @unique @default(autoincrement())
+  /// Secret for the customer's order-status link (no account needed).
+  publicToken      String        @unique
+  status           OrderStatus   @default(PENDING)
+  fulfillment      String
+  customerId       String?
+  customer         Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  branchId         String?
+  branch           Branch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  name             String
+  phone            String
+  email            String?
+  address          String?
+  notes            String?
+  subtotalCents    Int
+  discountCents    Int           @default(0)
+  deliveryFeeCents Int           @default(0)
+  taxCents         Int           @default(0)
+  totalCents       Int
+  couponCode       String?
+  paymentMethod    PaymentMethod
+  paymentStatus    PaymentStatus @default(UNPAID)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  items            OrderItem[]
+  payments         Payment[]
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+model OrderItem {
+  id             String                    @id @default(cuid())
+  orderId        String
+  order          Order                     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId      String?
+  product        Product?                  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productSlug    String
+  name           String
+  unitPriceCents Int
+  quantity       Int
+  note           String?
+  /// Configurator selection, when the item was built in /build.
+  build          Json?
+  customizations OrderItemCustomization[]
+}
+
+model OrderItemCustomization {
+  id          String    @id @default(cuid())
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  group       String
+  label       String
+  priceCents  Int
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  orderId     String
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider    String
+  /// "test" or "live". Test payments never move money.
+  mode        String
+  providerRef String?
+  amountCents Int
+  status      PaymentStatus
+  raw         Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// ── Content & comms ─────────────────────────────────────────────────────
+
+model Review {
+  id         String    @id @default(cuid())
+  productId  String?
+  product    Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  name       String
+  rating     Int
+  body       String
+  approved   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+}
+
+/// Single row ("default") holding editable site copy and business settings (SiteContent JSON).
+model SiteContent {
+  id        String   @id @default("default")
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  kind      String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Subscriber {
+  email     String   @id
+  createdAt DateTime @default(now())
+}

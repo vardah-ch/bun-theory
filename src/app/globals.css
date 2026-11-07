@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+/* ── BUN THEORY design tokens ─────────────────────────────────────────── */
+@theme {
+  /* Appetite palette: warm espresso darks instead of black, ketchup, mustard,
+     toasted-bun cream. Red and yellow read as "food" before anything is read. */
+  --color-char: #24130b;
+  --color-ink: #170b06;
+  --color-fire: #ff5a1f;
+  --color-fire-deep: #c8330f;
+  --color-cream: #fff1dc;
+  --color-beige: #d9c3a0;
+  --color-smoke: #3a1f13;
+  --color-mustard: #ffc23d;
+  --color-ketchup: #d8281a;
+  --color-bun: #f6d7a3;
+
+  --font-display: var(--font-big-shoulders), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+html {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  -webkit-text-size-adjust: 100%;
+}
+
+/*
+ * Theme scopes. Components are written as "ink surface, cream text"; these
+ * scopes remap the tokens so the same markup reads as a bright section.
+ */
+.theme-light {
+  --color-ink: #fff4e3;
+  --color-char: #fbe6c4;
+  --color-smoke: #f3d6a8;
+  --color-cream: #2a130a;
+  --color-beige: #7a5a40;
+  --color-fire: #e2361a;
+  --color-fire-deep: #b4260b;
+  color: var(--color-cream);
+}
+/* Content sitting on the orange grill glow (3D showcases inside light pages). */
+.theme-glow {
+  --color-ink: #170b06;
+  --color-cream: #fff4e3;
+  --color-fire: #ffc23d;
+  --color-fire-deep: #ffc23d;
+  color: var(--color-cream);
+}
+/* Light pages: the nav always has its own cream bar, so it stays legible over
+   3D showcases and photos before the page is scrolled. */
+.theme-light > header {
+  background: rgb(255 244 227 / 0.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 rgb(42 19 10 / 0.08);
+}
+.theme-ketchup {
+  --color-fire: #ffc23d;
+  --color-fire-deep: #ffc23d;
+  background-color: var(--color-ketchup);
+}
+
+/* No body background: it would paint over the fixed glow layer at z -10. */
+body {
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-fire);
+  color: var(--color-ink);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Display type: tight, heavy, condensed */
+.type-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* Annotation labels, lab-notebook voice */
+.type-annot {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Film grain over everything: keeps the dark from looking flat and digital */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain 0.9s steps(4) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-1%, -2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Till-receipt edges: torn zigzag top and bottom */
+.receipt {
+  --tooth: 10px;
+  mask:
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--tooth) 51% repeat-x;
+}
+
+@keyframes stagein {
+  from { opacity: 0; transform: translateY(4vh) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes scrollcue {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain::after { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-fire);
+  outline-offset: 3px;
+}
+
+/* ── Admin ──────────────────────────────────────────────────────────── */
+.admin-input {
+  width: 100%;
+  border-radius: 0.6rem;
+  border: 1px solid rgb(245 232 208 / 0.15);
+  background: rgb(245 232 208 / 0.03);
+  padding: 0.6rem 0.85rem;
+  color: var(--color-cream);
+  font-size: 0.9rem;
+}
+.admin-input:focus { outline: none; border-color: var(--color-fire); }
+.admin-input::placeholder { color: rgb(245 232 208 / 0.3); }
+select.admin-input option { background: #141110; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
