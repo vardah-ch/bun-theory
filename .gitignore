@@ -51,3 +51,6 @@ next-env.d.ts
 /.shots
 /shots
 *.log
+
+# screenshots written by the e2e test scripts
+/*.png
