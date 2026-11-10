@@ -4,6 +4,16 @@ import { bunGloss, CHEESE_COLOR } from "./geometries";
 import { swissHoles, tomatoTexture } from "./textures";
 
 const cache = new Map<string, Material | Material[]>();
+
+/**
+ * Phones and low-core devices get "lite" materials: no sheen (a costly extra
+ * lighting lobe), gloss kept. It's barely visible at phone size and roughly
+ * halves the shading cost of the bread and leaves.
+ */
+const LITE =
+  typeof window !== "undefined" &&
+  (window.matchMedia("(pointer: coarse)").matches || (navigator.hardwareConcurrency ?? 8) <= 4);
+const sheen = (v: number) => (LITE ? 0 : v);
 function memo<T extends Material | Material[]>(key: string, build: () => T): T {
   if (!cache.has(key)) cache.set(key, build());
   return cache.get(key) as T;
@@ -25,7 +35,7 @@ export const bunMaterial = (v: BunVariant) =>
       roughness: 0.58 - gloss * 0.25,
       clearcoat: 0.35 + gloss * 0.6,
       clearcoatRoughness: 0.32,
-      sheen: 0.7,
+      sheen: sheen(0.7),
       sheenRoughness: 0.8,
       sheenColor: new Color("#ffd2a0"),
     });
@@ -40,7 +50,7 @@ export const pattyMaterial = () =>
       roughness: 0.6,
       clearcoat: 0.75,
       clearcoatRoughness: 0.28,
-      sheen: 0.4,
+      sheen: sheen(0.4),
       sheenRoughness: 0.5,
       sheenColor: new Color("#ff9a5a"),
     }));
@@ -53,7 +63,7 @@ export const cheeseMaterial = (v: CheeseVariant) =>
       clearcoat: 0.9,
       clearcoatRoughness: 0.18,
       side: DoubleSide,
-      sheen: 0.6,
+      sheen: sheen(0.6),
       sheenColor: new Color("#fff0b0"),
       // Self-glow stands in for light scattering through warm, melting cheese.
       emissive: new Color(CHEESE_COLOR[v]).multiplyScalar(0.22),
@@ -87,7 +97,7 @@ export const lettuceMaterial = () =>
       clearcoat: 0.6,
       clearcoatRoughness: 0.25,
       side: DoubleSide,
-      sheen: 0.4,
+      sheen: sheen(0.4),
       sheenColor: new Color("#e8ffb0"),
       emissive: new Color("#2c5a0c"),
       emissiveIntensity: 0.25,
@@ -108,7 +118,7 @@ export const onionMaterial = (outer: boolean) =>
       color: outer ? "#b8648f" : "#f1e4ee",
       roughness: 0.3,
       clearcoat: 0.7,
-      sheen: 0.5,
+      sheen: sheen(0.5),
       sheenColor: new Color("#ffffff"),
       transparent: true,
       opacity: 0.93,

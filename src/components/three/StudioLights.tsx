@@ -21,7 +21,7 @@ export function StudioLights({ shadows = true }: { shadows?: boolean }) {
         intensity={300}
         color="#fff3e0"
         castShadow={shadows}
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
       />

@@ -44,7 +44,7 @@ export function HungryBar({ product }: { product: Product }) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
           transition={{ type: "spring", stiffness: 260, damping: 26 }}
-          className="fixed inset-x-3 bottom-3 z-[56] flex items-center gap-3 rounded-full bg-ink/95 py-2 pl-2 pr-2 text-cream shadow-[0_20px_50px_-12px_rgba(0,0,0,0.6)] ring-1 ring-cream/10 backdrop-blur sm:inset-x-auto sm:right-5 sm:bottom-5 sm:pr-2"
+          className="fixed inset-x-3 bottom-3 z-[56] flex items-center gap-3 rounded-full bg-ink/[0.97] py-2 pl-2 pr-2 text-cream shadow-[0_20px_50px_-12px_rgba(0,0,0,0.6)] ring-1 ring-cream/10 sm:inset-x-auto sm:right-5 sm:bottom-5 sm:pr-2"
         >
           <Link href={`/menu/${product.slug}`} className="flex min-w-0 items-center gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle_at_50%_60%,#ff9a3c,#c8330f)]">

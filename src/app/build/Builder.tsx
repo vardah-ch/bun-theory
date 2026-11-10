@@ -217,7 +217,7 @@ export function Builder({ groups }: { groups: BuildGroup[] }) {
       </div>
 
       {/* Order bar: always reachable */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-cream/10 bg-ink/95 px-5 py-4 backdrop-blur md:left-auto md:right-0 md:w-[calc(5/12*100%)] md:px-5 lg:px-10">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-cream/10 bg-ink/[0.97] px-5 py-4 md:left-auto md:right-0 md:w-[calc(5/12*100%)] md:px-5 lg:px-10">
         <div className="flex items-center gap-3 lg:gap-4">
           <div className="flex items-center rounded-full border border-cream/20">
             <button type="button" aria-label="One fewer" onClick={() => setQty((q) => Math.max(1, q - 1))} className="flex h-11 w-11 items-center justify-center text-cream/80 hover:text-fire">

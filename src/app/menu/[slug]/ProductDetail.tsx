@@ -32,7 +32,14 @@ export function ProductDetail({ product, categoryName, related }: { product: Pro
   const [qty, setQty] = useState(1);
   const [note, setNote] = useState("");
   const [added, setAdded] = useState(false);
-  const [view3d, setView3d] = useState(true);
+  // Phones start on the photo (same burger, instant); the 3D view is one tap away.
+  // Larger screens switch to 3D once the page is up.
+  const [view3d, setView3d] = useState(false);
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 1024px) and (pointer: fine)").matches) return;
+    const t = setTimeout(() => setView3d(true), 150);
+    return () => clearTimeout(t);
+  }, []);
   const loaded = useRef(false);
 
   // Editing from the cart: restore that line's choices once the cart has loaded.
@@ -108,7 +115,7 @@ export function ProductDetail({ product, categoryName, related }: { product: Pro
               <button
                 type="button"
                 onClick={() => setView3d((v) => !v)}
-                className="type-annot rounded-full border border-[#fff4e3]/40 bg-[#170b06]/25 px-3 py-2 text-[#fff4e3] backdrop-blur-sm hover:border-[#fff4e3]"
+                className="type-annot rounded-full border border-[#fff4e3]/40 bg-[#170b06]/25 px-3 py-2 text-[#fff4e3] hover:border-[#fff4e3]"
               >
                 {view3d ? "Photo" : "3D view"}
               </button>
@@ -203,7 +210,7 @@ export function ProductDetail({ product, categoryName, related }: { product: Pro
       </div>
 
       {/* Order bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-cream/10 bg-ink/95 px-5 py-4 backdrop-blur md:left-auto md:w-[calc(5/12*100%)] md:px-5 lg:px-10">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-cream/10 bg-ink/[0.97] px-5 py-4 md:left-auto md:w-[calc(5/12*100%)] md:px-5 lg:px-10">
         <div className="flex items-center gap-3 lg:gap-4">
           <div className="flex items-center rounded-full border border-cream/20">
             <button type="button" aria-label="One fewer" onClick={() => setQty((q) => Math.max(1, q - 1))} className="flex h-11 w-11 items-center justify-center text-cream/80 hover:text-fire">

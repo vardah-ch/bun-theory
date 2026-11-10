@@ -42,7 +42,7 @@ export function Dissection({ finale = { headline: "The art of a", accent: "perfe
       const cam = story.camera;
       const tl = gsap.timeline({
         defaults: { ease: "power2.inOut" },
-        scrollTrigger: { trigger: el, start: "top bottom", end: "bottom bottom", scrub: 0.8 },
+        scrollTrigger: { trigger: el, start: "top bottom", end: "bottom bottom", scrub: 0.5 },
       });
 
       // 0 → 1  The hero hands over: the burger lifts off the page as the camera leans in.
@@ -90,7 +90,7 @@ export function Dissection({ finale = { headline: "The art of a", accent: "perfe
   }, []);
 
   return (
-    <section ref={track} id="dissect" data-stage-zone aria-label="The Classic, taken apart and rebuilt" className="relative h-[620vh]">
+    <section ref={track} id="dissect" data-stage-zone aria-label="The Classic, taken apart and rebuilt" className="relative h-[540vh]">
       <div className="sticky top-0 z-20 h-dvh overflow-hidden">
         {/* Chapter A: lower left, out of the burger's way */}
         <div ref={chapterA} className="invisible absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/85 to-transparent px-5 pb-10 pt-24 md:inset-x-auto md:bottom-14 md:left-10 md:max-w-[34rem] md:bg-none md:p-0">

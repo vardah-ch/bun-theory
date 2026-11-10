@@ -34,17 +34,22 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#080808",
+  themeColor: "#170b06",
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+/** The banner's copy comes from the database: fetched inside its own Suspense boundary so no page waits on it. */
+async function BannerSlot() {
   const { banner } = await getSiteContent();
+  return <Banner {...banner} />;
+}
+
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable} antialiased`}>
       <body className="grain min-h-dvh">
         {/* Banner reads the URL (hidden on admin pages), so it streams in its own boundary. */}
         <Suspense fallback={null}>
-          <Banner {...banner} />
+          <BannerSlot />
         </Suspense>
         {children}
       </body>

@@ -41,7 +41,7 @@ export function HeroFront({ line, sub }: { line: string; sub: string }) {
             </Link>
             <Link
               href="/build"
-              className="inline-flex items-center rounded-full border border-cream/50 bg-ink/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-cream backdrop-blur-sm transition-colors hover:border-cream md:px-6 md:py-3.5 md:text-sm"
+              className="inline-flex items-center rounded-full border border-cream/50 bg-ink/20 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-cream transition-colors hover:border-cream md:px-6 md:py-3.5 md:text-sm"
             >
               Build your burger
             </Link>

@@ -10,6 +10,7 @@ import { Burger } from "./burger/Burger";
 import { BuildBurger } from "./burger/BuildBurger";
 import { Prop } from "./props/Props";
 import { StudioLights } from "./StudioLights";
+import { BlobShadow, useAdaptiveDpr } from "./Perf";
 
 function Subject({ product }: { product: Pick<Product, "layers" | "artwork" | "category"> }) {
   if (product.category === "combos") {
@@ -53,10 +54,11 @@ type Props = {
 export default function ProductScene({ product, still = false, interactive = false }: Props) {
   const h = product.layers ? stackLayers(product.layers).height : 2.2;
   const distance = product.category === "combos" ? 9.5 : Math.max(7, h * 3.3);
+  const { dpr, monitor } = useAdaptiveDpr(1.5);
   return (
     <Canvas
       shadows="percentage"
-      dpr={still ? 2 : [1, 1.8]}
+      dpr={still ? 2 : dpr}
       camera={{ fov: 28, position: [distance * 0.34, distance * 0.3, distance * 0.89] }}
       gl={{ alpha: true, antialias: true, preserveDrawingBuffer: still }}
     >
@@ -70,7 +72,15 @@ export default function ProductScene({ product, still = false, interactive = fal
           </Spin>
         )}
       </group>
-      <ContactShadows position-y={-h / 2 - 0.05} opacity={0.7} scale={8} blur={2.4} far={3} />
+      {/* Studio renders get the true contact shadow; live views use the free blob. */}
+      {still ? (
+        <ContactShadows position-y={-h / 2 - 0.05} opacity={0.7} scale={8} blur={2.4} far={3} />
+      ) : (
+        <>
+          <BlobShadow y={-h / 2 - 0.05} size={3.4} opacity={0.6} />
+          {monitor}
+        </>
+      )}
       {interactive && <OrbitControls enablePan={false} minDistance={4} maxDistance={14} autoRotate autoRotateSpeed={0.6} target={[0, 0, 0]} />}
     </Canvas>
   );

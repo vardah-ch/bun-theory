@@ -41,7 +41,7 @@ export function MenuBrowser({ categories, products }: { categories: Category[]; 
   return (
     <div className="mt-14 md:mt-20">
       {/* Controls: sticky under the nav, category rail scrolls sideways on phones */}
-      <div className="sticky top-[6.4rem] z-30 -mx-5 border-y border-cream/10 bg-ink/95 px-5 py-3 backdrop-blur md:top-20 md:-mx-10 md:px-10">
+      <div className="sticky top-[6.4rem] z-30 -mx-5 border-y border-cream/10 bg-ink/[0.97] px-5 py-3 md:top-20 md:-mx-10 md:px-10">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <nav aria-label="Categories" className="-mx-5 overflow-x-auto px-5 md:mx-0 md:px-0 [scrollbar-width:none]">
             <ul className="flex gap-2 whitespace-nowrap">

@@ -177,8 +177,10 @@ export function SauceSplash({ count = 70 }: { count?: number }) {
     const mesh = ref.current;
     if (!mesh) return;
     const e = explodeAmount();
+    // Stays in the scene (so its shader is compiled up front with everything
+    // else); between splashes it simply draws zero beads.
     const visible = e > 0.002 && e < 0.85;
-    mesh.visible = visible;
+    mesh.count = visible ? drops.length : 0;
     if (!visible) return;
     // Spray from the heart of the burger: the patty, wherever it is in flight.
     const patty = story.objects.get("patty-1");

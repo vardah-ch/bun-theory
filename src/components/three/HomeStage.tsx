@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ContactShadows } from "@react-three/drei";
 import { MathUtils, Vector3, type Group } from "three";
 import { CLASSIC, stackLayers } from "@/lib/burger/layers";
 import { Burger } from "./burger/Burger";
@@ -10,6 +9,7 @@ import { Embers } from "./Embers";
 import { StudioLights } from "./StudioLights";
 import { HeatDriver, SauceSplash, Steam } from "./Appetite";
 import { story } from "./story";
+import { BlobShadow, useAdaptiveDpr } from "./Perf";
 
 const CLASSIC_HEIGHT = stackLayers(CLASSIC).height;
 
@@ -112,10 +112,38 @@ function webglAvailable() {
   }
 }
 
-export default function HomeStage({ active = true }: { active?: boolean }) {
+/** Tells the page once real frames are on screen, so the stand-in image can fade out. */
+function ReadySignal({ onReady }: { onReady?: () => void }) {
+  const { gl, scene, camera } = useThree();
+  const compiled = useRef(false);
+  const frames = useRef(0);
+  useEffect(() => {
+    // Compile every shader before the scene is revealed, in parallel where the
+    // GPU driver allows it, so nothing compiles mid-scroll (the classic freeze
+    // when the burger first explodes).
+    let alive = true;
+    gl.compileAsync(scene, camera)
+      .catch(() => undefined)
+      .finally(() => {
+        if (alive) compiled.current = true;
+      });
+    return () => {
+      alive = false;
+    };
+  }, [gl, scene, camera]);
+  useFrame(() => {
+    if (!compiled.current) return;
+    frames.current += 1;
+    if (frames.current === 3) onReady?.();
+  });
+  return null;
+}
+
+export default function HomeStage({ active = true, onReady }: { active?: boolean; onReady?: () => void }) {
   const [support, setSupport] = useState<"pending" | "yes" | "no">("pending");
   const [reduced, setReduced] = useState(false);
   const [mobile, setMobile] = useState(false);
+  const { dpr, monitor } = useAdaptiveDpr(1.5);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -133,7 +161,7 @@ export default function HomeStage({ active = true }: { active?: boolean }) {
     <Canvas
       shadows="percentage"
       frameloop={active ? "always" : "never"}
-      dpr={[1, mobile ? 1.5 : 1.8]}
+      dpr={dpr}
       camera={{ fov: 28, near: 0.1, far: 60, position: [0, 0.9, 7.6] }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       // The canvas never takes clicks; pointer parallax listens on the page instead.
@@ -148,10 +176,12 @@ export default function HomeStage({ active = true }: { active?: boolean }) {
         <Burger specs={CLASSIC} targets={story.targets} castShadow={!mobile} onGroup={publish} />
         {!reduced && <Steam count={mobile ? 10 : 18} top={CLASSIC_HEIGHT / 2 - 0.1} />}
       </Turntable>
-      {!reduced && <SauceSplash count={mobile ? 60 : 120} />}
+      {!reduced && <SauceSplash count={mobile ? 50 : 100} />}
       <HeatDriver />
-      <ContactShadows position-y={-CLASSIC_HEIGHT / 2 - 0.06} opacity={0.6} scale={9} blur={2.6} far={4} resolution={512} color="#3a0e02" />
-      {!reduced && <Embers count={mobile ? 90 : 260} />}
+      <BlobShadow y={-CLASSIC_HEIGHT / 2 - 0.06} size={3.6} opacity={0.65} />
+      {!reduced && <Embers count={mobile ? 50 : 140} />}
+      {monitor}
+      <ReadySignal onReady={onReady} />
       <LabelProjector />
     </Canvas>
   );
