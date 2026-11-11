@@ -49,7 +49,8 @@ npm run dev                 #             http://localhost:3000
 
 | Variable | Required | Notes |
 |---|---|---|
-| `DATABASE_URL` | yes | PostgreSQL connection string. Use a UTF-8 database (all managed providers are). |
+| `DATABASE_URL` | yes | PostgreSQL connection string (pooled on serverless hosts). Use a UTF-8 database (all managed providers are). |
+| `DATABASE_URL_UNPOOLED` | no | Direct connection used for migrations, if your host provides one (Neon on Vercel does). |
 | `AUTH_SECRET` | yes | 32+ random characters; signs admin sessions. `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"` |
 | `NEXT_PUBLIC_SITE_URL` | yes in production | e.g. `https://buntheory.com`. Used for the sitemap and social previews. |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | for seeding | First owner account. Change the password in Admin → Team & account after signing in. |
