@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps<"/menu/[slug]">): P
   const { slug } = await params;
   const p = await getProductBySlug(slug);
   if (!p) return { title: "Not on the menu" };
-  return { title: p.name, description: `${p.tagline} ${p.description}`.slice(0, 160), openGraph: { images: [`/renders/${p.slug}.png`] } };
+  return { title: p.name, description: `${p.tagline} ${p.description}`.slice(0, 160), openGraph: { images: [p.imageUrl || `/photos/${p.slug}.jpg`] } };
 }
 
 async function Product({ params }: { params: PageProps<"/menu/[slug]">["params"] }) {

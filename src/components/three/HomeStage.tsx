@@ -41,7 +41,9 @@ function LabelProjector() {
       const side = Number(el.dataset.side) || 1;
       entry.object.updateWorldMatrix(true, false);
       v.current.set(0, entry.height / 2, 0).applyMatrix4(entry.object.matrixWorld);
-      v.current.addScaledVector(right.current, side * 1.12);
+      // The dot lands on the food itself (inside its edge), so each line visibly
+      // points at its ingredient rather than at the air beside it.
+      v.current.addScaledVector(right.current, side * 0.7);
       v.current.project(camera);
       const ax = (v.current.x * 0.5 + 0.5) * size.width;
       const ay = (-v.current.y * 0.5 + 0.5) * size.height;

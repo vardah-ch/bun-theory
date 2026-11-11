@@ -53,11 +53,12 @@ export function Sourcing() {
         </div>
 
         <div className="relative hidden md:col-span-7 md:block" aria-hidden="true">
-          <div data-speed="0.6" className="absolute right-[4%] top-0 w-[58%]">
-            <ProductImage product={{ slug: "the-classic", name: "" }} sizes="40vw" className="drop-shadow-[0_40px_50px_rgba(60,20,0,0.35)]" />
+          {/* Pinned-up prints: dark, real food on the bright mustard wall */}
+          <div data-speed="0.6" className="absolute right-[4%] top-0 w-[52%] rotate-[3deg]">
+            <ProductImage product={{ slug: "double-smash", name: "" }} sizes="35vw" className="aspect-[4/5] w-full rounded-[1.25rem] shadow-[0_40px_60px_-18px_rgba(60,20,0,0.55)] ring-[10px] ring-[#fff4e3]" />
           </div>
-          <div data-speed="-0.4" className="absolute left-0 top-[42%] w-[38%] rotate-[-8deg]">
-            <ProductImage product={{ slug: "theory-fries", name: "" }} sizes="25vw" className="drop-shadow-[0_30px_40px_rgba(60,20,0,0.3)]" />
+          <div data-speed="-0.4" className="absolute left-[2%] top-[40%] w-[36%] rotate-[-7deg]">
+            <ProductImage product={{ slug: "theory-fries", name: "" }} sizes="25vw" className="aspect-square w-full rounded-[1.25rem] shadow-[0_30px_50px_-16px_rgba(60,20,0,0.5)] ring-[10px] ring-[#fff4e3]" />
           </div>
         </div>
       </div>

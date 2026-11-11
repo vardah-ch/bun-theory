@@ -65,9 +65,9 @@ export function BuildTeaser() {
 
       {/* Three different answers to the same question */}
       <div className="mt-20 grid grid-cols-3 gap-2 md:mt-28 md:gap-8" aria-hidden="true">
-        {["single-smash", "fire-bird", "greenhouse"].map((slug, i) => (
+        {["the-professor", "fire-bird", "greenhouse"].map((slug, i) => (
           <figure key={slug} className={i === 1 ? "md:-translate-y-12" : ""}>
-            <ProductImage product={{ slug, name: "" }} sizes="30vw" className="w-full drop-shadow-[0_30px_30px_rgba(70,0,0,0.45)]" />
+            <ProductImage product={{ slug, name: "" }} sizes="30vw" className="aspect-[4/5] w-full rounded-xl shadow-[0_30px_50px_-18px_rgba(40,0,0,0.7)] md:rounded-2xl" />
             <figcaption className="type-annot mt-2 text-center text-cream/70">Build #{(48213 + i * 70411).toString().padStart(6, "0")}</figcaption>
           </figure>
         ))}

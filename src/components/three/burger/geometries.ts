@@ -224,8 +224,8 @@ export function pattyGeometry(variant: PattyVariant, H: number) {
 /* ── Cheese ───────────────────────────────────────────────────────────── */
 
 export const CHEESE_COLOR: Record<CheeseVariant, string> = {
-  cheddar: "#f08c1c",
-  american: "#f6bb3e",
+  cheddar: "#ff9a12",
+  american: "#ffb627",
   swiss: "#f0dfa2",
 };
 

@@ -87,7 +87,7 @@ export function CartView({ delivery, taxRate, addons = [] }: { delivery: Deliver
             const visible = i.options.filter((o) => !(i.build && o.priceCents === 0 && o.group === "Bun"));
             return (
               <li key={i.lineId} className="grid grid-cols-[5.5rem_1fr] gap-4 border-b border-cream/15 py-6 md:grid-cols-[7rem_1fr_auto] md:gap-6">
-                <div className="aspect-square overflow-hidden rounded-xl bg-[radial-gradient(60%_55%_at_50%_60%,#ffd98a_0%,#f6b25a_80%)]">
+                <div className="aspect-square overflow-hidden rounded-xl bg-[#1c0f08]">
                   <ProductImage product={{ slug: i.build ? "the-classic" : i.slug, name: i.name }} sizes="112px" className="h-full w-full" />
                 </div>
                 <div className="min-w-0">
@@ -127,7 +127,7 @@ export function CartView({ delivery, taxRate, addons = [] }: { delivery: Deliver
             <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
               {extras.map((a) => (
                 <li key={a.id} className="flex items-center gap-3 rounded-2xl bg-char p-3 sm:flex-col sm:items-start">
-                  <ProductImage product={a} sizes="96px" className="h-16 w-16 shrink-0 sm:h-20 sm:w-20" />
+                  <ProductImage product={a} sizes="96px" className="h-16 w-16 shrink-0 rounded-xl sm:h-20 sm:w-20" />
                   <div className="min-w-0 flex-1">
                     <p className="type-display truncate text-2xl text-cream">{a.name}</p>
                     <p className="text-sm text-cream/60">+{formatPrice(a.priceCents)}</p>

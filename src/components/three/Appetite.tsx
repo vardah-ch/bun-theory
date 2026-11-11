@@ -132,7 +132,7 @@ export function Steam({ count = 18, top = 0.9 }: { count?: number; top?: number 
   return <points geometry={geometry} material={material} frustumCulled={false} layers={STEAM_LAYER} />;
 }
 
-const SPLASH_COLORS = ["#f08a4b", "#ee3d1a", "#d8281a", "#f39a52", "#ffb21a", "#f08a4b"];
+const SPLASH_COLORS = ["#f08a4b", "#ee3d1a", "#d8281a", "#f39a52", "#f08a4b"];
 
 /**
  * The money shot: as the layers fly apart, sauce and melted cheese spray off
@@ -151,7 +151,7 @@ export function SauceSplash({ count = 70 }: { count?: number }) {
         dir: new Vector3(Math.cos(a), up, Math.sin(a)).normalize(),
         reach: 1.6 + rand() * 2.8,
         // Mostly fine spray, a few heavy drops.
-        size: 0.012 + Math.pow(rand(), 3.2) * 0.055,
+        size: 0.008 + Math.pow(rand(), 3.5) * 0.03,
         delay: rand() * 0.25,
         color: SPLASH_COLORS[Math.floor(rand() * SPLASH_COLORS.length)],
       };

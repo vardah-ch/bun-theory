@@ -24,7 +24,7 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  openGraph: { type: "website", siteName: "BUN THEORY", images: ["/renders/the-classic.png"] },
+  openGraph: { type: "website", siteName: "BUN THEORY", images: ["/photos/the-classic.jpg"] },
   title: {
     default: "BUN THEORY — Burgers, studied obsessively",
     template: "%s · BUN THEORY",

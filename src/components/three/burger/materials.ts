@@ -2,6 +2,7 @@ import { Color, DoubleSide, MeshPhysicalMaterial, MeshStandardMaterial, type Mat
 import type { BunVariant, CheeseVariant, SauceVariant } from "@/lib/burger/layers";
 import { bunGloss, CHEESE_COLOR } from "./geometries";
 import { swissHoles, tomatoTexture } from "./textures";
+import { addCrust } from "./crust";
 
 const cache = new Map<string, Material | Material[]>();
 
@@ -20,7 +21,7 @@ function memo<T extends Material | Material[]>(key: string, build: () => T): T {
 }
 
 export const SAUCE_COLOR: Record<SauceVariant, string> = {
-  signature: "#f08a4b",
+  signature: "#f7a86a",
   bbq: "#6e1e0a",
   spicy: "#ee3d1a",
   mustard: "#f2b51a",
@@ -29,44 +30,53 @@ export const SAUCE_COLOR: Record<SauceVariant, string> = {
 export const bunMaterial = (v: BunVariant) =>
   memo(`bun-${v}`, () => {
     const gloss = bunGloss(v);
-    return new MeshPhysicalMaterial({
-      vertexColors: true,
-      // Egg-wash shine: a clear glossy layer over a soft, slightly fuzzy crumb.
-      roughness: 0.58 - gloss * 0.25,
-      clearcoat: 0.35 + gloss * 0.6,
-      clearcoatRoughness: 0.32,
-      sheen: sheen(0.7),
-      sheenRoughness: 0.8,
-      sheenColor: new Color("#ffd2a0"),
-    });
+    // Egg-wash shine: a soft clear layer (not lacquer) over a fine, slightly
+    // mottled bake, so it reads as bread and not as plastic.
+    return addCrust(
+      new MeshPhysicalMaterial({
+        vertexColors: true,
+        roughness: 0.62 - gloss * 0.2,
+        clearcoat: 0.18 + gloss * 0.32,
+        clearcoatRoughness: 0.45,
+        sheen: sheen(0.7),
+        sheenRoughness: 0.8,
+        sheenColor: new Color("#ffd2a0"),
+      }),
+      { scale: 9, color: 0.16, rough: 0.25, bump: 0.0035, char: [0.32, 0.12, 0.03] },
+    );
   });
 
 export const seedMaterial = () => memo("seed", () => new MeshStandardMaterial({ color: "#f4e3b9", roughness: 0.55 }));
 
 export const pattyMaterial = () =>
-  memo("patty", () => new MeshPhysicalMaterial({
-      vertexColors: true,
-      // Seared crust with rendered fat on it: rough underneath, wet highlights on top.
-      roughness: 0.6,
-      clearcoat: 0.75,
-      clearcoatRoughness: 0.28,
-      sheen: sheen(0.4),
-      sheenRoughness: 0.5,
-      sheenColor: new Color("#ff9a5a"),
-    }));
+  memo("patty", () =>
+    // A hard sear: craggy, dry crust with charred pits and a few glistening
+    // spots of rendered fat. A glossy clear coat everywhere made it read as chocolate.
+    addCrust(
+      new MeshPhysicalMaterial({
+        vertexColors: true,
+        roughness: 0.72,
+        clearcoat: 0.32,
+        clearcoatRoughness: 0.35,
+        sheen: sheen(0.35),
+        sheenRoughness: 0.6,
+        sheenColor: new Color("#ff8a4a"),
+      }),
+      { scale: 14, color: 0.55, rough: 0.7, bump: 0.012, char: [0.035, 0.012, 0.004] },
+    ));
 
 export const cheeseMaterial = (v: CheeseVariant) =>
   memo(`cheese-${v}`, () => {
     const m = new MeshPhysicalMaterial({
       color: CHEESE_COLOR[v],
-      roughness: 0.3,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.18,
+      roughness: 0.26,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.15,
       side: DoubleSide,
-      sheen: sheen(0.6),
-      sheenColor: new Color("#fff0b0"),
+      sheen: sheen(0.5),
+      sheenColor: new Color("#ffe08a"),
       // Self-glow stands in for light scattering through warm, melting cheese.
-      emissive: new Color(CHEESE_COLOR[v]).multiplyScalar(0.22),
+      emissive: new Color(CHEESE_COLOR[v]).multiplyScalar(0.3),
     });
     if (v === "swiss") {
       m.alphaMap = swissHoles();
@@ -79,10 +89,12 @@ export const sauceMaterial = (v: SauceVariant) =>
   memo(`sauce-${v}`, () =>
     new MeshPhysicalMaterial({
       color: SAUCE_COLOR[v],
-      roughness: 0.08,
+      // Creamy and wet: glossy, and lit a little from within so it never
+      // reads as a dark disc when the light skims across it.
+      roughness: 0.14,
       clearcoat: 1,
-      clearcoatRoughness: 0.04,
-      emissive: new Color(SAUCE_COLOR[v]).multiplyScalar(0.12),
+      clearcoatRoughness: 0.06,
+      emissive: new Color(SAUCE_COLOR[v]).multiplyScalar(0.32),
       side: DoubleSide,
       polygonOffset: true,
       polygonOffsetFactor: -2,

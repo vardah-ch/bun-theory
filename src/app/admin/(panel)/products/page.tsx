@@ -26,7 +26,7 @@ export default async function ProductsPage() {
               <ul className="divide-y divide-cream/10">
                 {list.map((p) => (
                   <li key={p.id} className="flex flex-wrap items-center gap-4 py-3">
-                    <Image unoptimized={Boolean(p.imageUrl && !p.imageUrl.includes("res.cloudinary.com"))} src={p.imageUrl || `/renders/${p.slug}.png`} alt="" width={56} height={56} className="h-14 w-14 rounded-lg bg-cream/5 object-contain" />
+                    <Image unoptimized={Boolean(p.imageUrl && !p.imageUrl.includes("res.cloudinary.com"))} src={p.imageUrl || `/photos/${p.slug}.jpg`} alt="" width={56} height={56} className="h-14 w-14 rounded-lg bg-cream/5 object-cover" />
                     <div className="min-w-48 flex-1">
                       <Link href={`/admin/products/${p.id}`} className="text-lg hover:text-fire">{p.name}</Link>
                       <p className="text-xs text-cream/45">/menu/{p.slug}</p>

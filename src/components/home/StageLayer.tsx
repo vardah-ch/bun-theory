@@ -56,17 +56,18 @@ export function StageLayer() {
 
   return (
     <>
-      {/* The warm pool of light the burger sits in: a grill-lit amber, not a black void.
-          Fixed, so it travels with the burger. */}
+      {/* A dark, warm studio with one spotlight on the burger, the way food is shot
+          for a menu board. The golden bun needs a deep background to glow against:
+          an orange backdrop swallowed it. Fixed, so it travels with the burger. */}
       <div
         className={`pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700 ${active ? "opacity-100" : "opacity-0"}`}
         aria-hidden="true"
       >
-        {/* Glow and edge vignette in one layer: one full-screen paint instead of two. */}
-        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_55%,rgba(30,6,2,0.55)_100%),radial-gradient(70%_62%_at_55%_52%,#ff9a3c_0%,#f0601c_26%,#a8260c_55%,#4a1206_82%,#250904_100%)]" />
-        {/* Heat: flares while the burger is apart, driven per frame by the 3D scene (--heat). */}
+        {/* Spotlight and edge vignette in one layer: one full-screen paint instead of two. */}
+        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_50%,rgba(8,3,1,0.6)_100%),radial-gradient(58%_55%_at_54%_54%,#6e2d12_0%,#4a1c0b_30%,#2a0f06_62%,#150804_100%)]" />
+        {/* Heat: a low ember glow while the burger is apart, driven per frame by the 3D scene (--heat). */}
         <div
-          className="absolute inset-0 bg-[radial-gradient(45%_42%_at_52%_50%,#ffe08a_0%,#ffb340_35%,transparent_75%)]"
+          className="absolute inset-0 bg-[radial-gradient(40%_38%_at_52%_52%,rgba(255,140,50,0.42)_0%,rgba(220,80,20,0.18)_45%,transparent_75%)]"
           style={{ opacity: "var(--heat, 0.35)" }}
         />
       </div>

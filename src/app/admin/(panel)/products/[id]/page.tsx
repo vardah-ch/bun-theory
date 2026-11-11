@@ -68,7 +68,7 @@ export default async function ProductEdit({ params }: PageProps<"/admin/products
         <div className="space-y-4">
           {p && (
             <Card title="Image">
-              <Image unoptimized={Boolean(p.imageUrl && !p.imageUrl.includes("res.cloudinary.com"))} src={p.imageUrl || `/renders/${p.slug}.png`} alt="" width={400} height={400} className="w-full rounded-xl bg-cream/5" />
+              <Image unoptimized={Boolean(p.imageUrl && !p.imageUrl.includes("res.cloudinary.com"))} src={p.imageUrl || `/photos/${p.slug}.jpg`} alt="" width={400} height={400} className="w-full rounded-xl bg-cream/5" />
               <p className="mt-2 text-xs text-cream/45">
                 {p.layers ? "This burger renders in 3D from its layer stack." : p.imageUrl ? "Using the uploaded photo." : "Using the studio render."}
               </p>

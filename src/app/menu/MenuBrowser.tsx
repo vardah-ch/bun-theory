@@ -110,8 +110,9 @@ export function MenuBrowser({ categories, products }: { categories: Category[]; 
           <ul className="mt-8 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((p, i) => (
               <li key={p.id} className="group flex flex-col">
-                <Link href={`/menu/${p.slug}`} className="relative block aspect-square overflow-hidden rounded-2xl bg-[radial-gradient(60%_55%_at_50%_62%,#ffd27a_0%,#f7a54a_55%,#ec7a2c_100%)] shadow-[0_20px_40px_-24px_rgba(140,40,0,0.6)]">
-                  <span className="type-annot absolute left-4 top-4 z-10 text-[#5a2508]/60">
+                <Link href={`/menu/${p.slug}`} className="relative block aspect-square overflow-hidden rounded-2xl bg-[#1c0f08] shadow-[0_24px_48px_-24px_rgba(60,20,0,0.55)]">
+                  <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-20 bg-gradient-to-b from-black/45 to-transparent" />
+                  <span className="type-annot absolute left-4 top-4 z-10 text-[#fff4e3]/80">
                     {category.slug.slice(0, 2).toUpperCase()}-{String(i + 1).padStart(2, "0")}
                   </span>
                   {p.tags?.length ? (
@@ -120,7 +121,7 @@ export function MenuBrowser({ categories, products }: { categories: Category[]; 
                   <ProductImage
                     product={p}
                     sizes="(min-width:1280px) 25vw, (min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
-                    className={`h-full w-full scale-95 transition-transform duration-700 [transition-timing-function:var(--ease-out-expo)] group-hover:scale-105 group-hover:-rotate-2 ${p.available ? "" : "opacity-40 grayscale"}`}
+                    className={`h-full w-full transition-transform duration-700 [transition-timing-function:var(--ease-out-expo)] group-hover:scale-[1.06] ${p.available ? "" : "opacity-40 grayscale"}`}
                   />
                 </Link>
                 <div className="mt-4 flex items-start justify-between gap-4">

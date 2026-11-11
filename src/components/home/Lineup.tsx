@@ -63,7 +63,7 @@ export function Lineup({ products }: { products: Product[] }) {
 
               {/* Touch screens and tablets get the photo inline */}
               <div className="col-span-2 -my-2 w-full md:col-span-12 md:row-start-2 lg:hidden">
-                <ProductImage product={p} sizes="90vw" className="mx-auto h-56 w-auto" />
+                <ProductImage product={p} sizes="(min-width:768px) 90vw, 100vw" className="aspect-[4/3] w-full rounded-2xl sm:aspect-[16/9]" />
               </div>
 
               <p className="col-span-2 max-w-sm text-cream/70 md:col-span-5 md:col-start-8 lg:col-span-3">{p.tagline}</p>
@@ -101,7 +101,7 @@ export function Lineup({ products }: { products: Product[] }) {
                 transition={{ type: "spring", stiffness: 260, damping: 22 }}
                 className="-translate-x-1/2 -translate-y-1/2"
               >
-                <ProductImage product={products[active]} sizes="360px" className="h-[22rem] w-[22rem] drop-shadow-[0_30px_40px_rgba(90,30,0,0.35)]" />
+                <ProductImage product={products[active]} sizes="340px" className="h-[21rem] w-[17rem] rounded-2xl shadow-[0_40px_70px_-20px_rgba(60,20,0,0.55)] ring-4 ring-[#fff4e3]" />
               </motion.div>
             )}
           </AnimatePresence>

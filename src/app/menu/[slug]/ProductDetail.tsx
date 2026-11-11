@@ -32,14 +32,9 @@ export function ProductDetail({ product, categoryName, related }: { product: Pro
   const [qty, setQty] = useState(1);
   const [note, setNote] = useState("");
   const [added, setAdded] = useState(false);
-  // Phones start on the photo (same burger, instant); the 3D view is one tap away.
-  // Larger screens switch to 3D once the page is up.
+  // The real photo leads (it's what makes people hungry); the 3D model, which
+  // follows the extras picked below, is one tap away.
   const [view3d, setView3d] = useState(false);
-  useEffect(() => {
-    if (!window.matchMedia("(min-width: 1024px) and (pointer: fine)").matches) return;
-    const t = setTimeout(() => setView3d(true), 150);
-    return () => clearTimeout(t);
-  }, []);
   const loaded = useRef(false);
 
   // Editing from the cart: restore that line's choices once the cart has loaded.
@@ -102,22 +97,23 @@ export function ProductDetail({ product, categoryName, related }: { product: Pro
     <>
       <div className="grid md:grid-cols-12">
         {/* Showcase */}
-        <div className="theme-glow relative h-[62dvh] bg-[radial-gradient(65%_60%_at_50%_56%,#ffa848_0%,#e8601e_42%,#9a2a0c_80%,#5a1606_100%)] md:sticky md:top-0 md:col-span-7 md:h-dvh">
+        <div className="theme-glow relative h-[62dvh] overflow-hidden bg-[radial-gradient(65%_60%_at_50%_52%,#4a2614_0%,#24120a_55%,#120805_100%)] md:sticky md:top-0 md:col-span-7 md:h-dvh">
           {has3d && view3d ? (
             <ProductScene product={{ ...product, layers: liveLayers }} interactive />
           ) : (
-            <div className="flex h-full items-center justify-center p-10">
-              <ProductImage product={product} sizes="60vw" priority className="max-h-full w-auto" />
-            </div>
+            <>
+              <ProductImage product={product} sizes="(min-width:768px) 60vw, 100vw" priority className="h-full w-full" />
+              <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/55 to-transparent" />
+            </>
           )}
           <div className="absolute bottom-5 left-5 flex items-center gap-3 md:bottom-8 md:left-10">
             {has3d && (
               <button
                 type="button"
                 onClick={() => setView3d((v) => !v)}
-                className="type-annot rounded-full border border-[#fff4e3]/40 bg-[#170b06]/25 px-3 py-2 text-[#fff4e3] hover:border-[#fff4e3]"
+                className="type-annot rounded-full border border-[#fff4e3]/50 bg-[#170b06]/55 px-3.5 py-2 text-[#fff4e3] backdrop-blur-sm hover:border-[#fff4e3]"
               >
-                {view3d ? "Photo" : "3D view"}
+                {view3d ? "Back to photo" : "Spin it in 3D"}
               </button>
             )}
             {has3d && view3d && <span className="type-annot hidden text-[#fff4e3]/70 md:inline">Drag to turn · Scroll to zoom</span>}
@@ -198,7 +194,9 @@ export function ProductDetail({ product, categoryName, related }: { product: Pro
                 {related.map((r) => (
                   <li key={r.id}>
                     <Link href={`/menu/${r.slug}`} className="group block">
-                      <ProductImage product={r} sizes="15vw" className="aspect-square w-full rounded-xl bg-cream/[0.03] transition-transform group-hover:-rotate-3" />
+                      <span className="block overflow-hidden rounded-xl">
+                        <ProductImage product={r} sizes="(min-width:768px) 12vw, 30vw" className="aspect-square w-full transition-transform duration-500 group-hover:scale-105" />
+                      </span>
                       <p className="mt-2 text-sm text-cream/80 group-hover:text-fire">{r.name}</p>
                     </Link>
                   </li>

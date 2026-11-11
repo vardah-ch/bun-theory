@@ -42,7 +42,9 @@ npm run dev                 #             http://localhost:3000
 | `npm run db:deploy` | Apply pending migrations (production) |
 | `npm run db:seed` | Seed sample catalogue, settings and the first admin (safe to re-run; never overwrites admin edits) |
 | `npm run db:reset-test-data -- --yes` | Delete all orders, customers, payments, reviews, notifications and subscribers |
-| `npm run renders [slug…]` | Re-photograph menu items from their 3D models into `public/renders/` (dev server must be running) |
+| `npm run renders [slug…]` | Re-photograph menu items from their 3D models into `public/renders/` (dev server must be running; used for the hero's first-paint stand-in) |
+
+**Menu photos.** Every menu item shows a real photo from `public/photos/<slug>.jpg` (square, about 1200×1200 JPG). The bundled ones are free Unsplash stock photos (sources in `public/photos/CREDITS.md`). To show your own food, replace a file with the same name, or upload a photo for the item in the admin panel; an uploaded photo takes priority.
 | `npm run test:order` / `test:admin` / `test:build` | Browser end-to-end tests (Playwright; run `npx playwright install chromium` once). Set `BASE_URL` to test another server. |
 
 ## 3. Environment variables

@@ -1,6 +1,7 @@
 import type { Product } from "@/lib/catalog/types";
 import { formatPrice } from "@/lib/format";
 import { AddToCart } from "@/components/product/AddToCart";
+import { ProductImage } from "@/components/product/ProductImage";
 import { Reveal } from "./Reveal";
 
 /** What each combo would cost à la carte, so the receipt can show the real saving. */
@@ -40,6 +41,12 @@ export function Combos({ combos, products }: { combos: Product[]; products: Prod
           return (
             <Reveal as="li" key={c.id} delay={i * 0.1} className={i === 1 ? "lg:translate-y-10" : ""}>
               <article className="receipt relative bg-[#fff6e6] px-6 pb-8 pt-7 font-mono text-[13px] text-ink shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)]">
+                {/* The photo pinned to the ticket: what you actually get. */}
+                <ProductImage
+                  product={c}
+                  sizes="(min-width:1024px) 30vw, (min-width:768px) 45vw, 90vw"
+                  className={`mb-6 mt-2 aspect-[4/3] w-full rounded-md shadow-[0_18px_30px_-14px_rgba(0,0,0,0.6)] ring-[6px] ring-white ${i % 2 ? "rotate-[1.5deg]" : "-rotate-[1.5deg]"}`}
+                />
                 <header className="border-b border-dashed border-ink/40 pb-4 text-center">
                   <p className="type-display text-3xl tracking-tight">BUN THEORY</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-ink/60">Ticket Nº {String(101 + i * 37).padStart(4, "0")}</p>
