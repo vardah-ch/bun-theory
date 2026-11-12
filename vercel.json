@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "buildCommand": "npm run db:deploy && npm run build"
+  "buildCommand": "if [ -n \"$DATABASE_URL\" ]; then npm run db:deploy; else echo 'No DATABASE_URL: skipping migrations (site runs on the bundled menu until a database is connected)'; fi && npm run build"
 }
